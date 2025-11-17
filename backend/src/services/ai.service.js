@@ -5,14 +5,35 @@ const ai = new GoogleGenAI({
     apiKey: process.env.GOOGLE_API_KEY
 });
 
-async function main() {
+
+
+async function genrateCaption(base64ImageFile) {
+    const contents = [
+        {
+            inlineData: {
+                mimeType: "image/jpeg",
+                data: base64ImageFile,
+            },
+        },
+        { text: "Caption this image." },
+    ];
+
     const response = await ai.models.generateContent({
         model: "gemini-2.5-flash",
-        contents: "Explain how AI works in a few words",
+        contents: contents,
+        config:{
+            systemInstruction:`
+        You are an expert in generating captions for images.
+        You generate single caption for the images.
+        Your captoin should be short and concise
+        Your use hashtags and emojis in the caption.
+        And genrate caption in roman/hinglish language
+        The caption should be in dark humor + dirty humor
+        `
+        }
+        
     });
-    console.log(response.text);
+    
+    return response.text
 }
-
-(async () => {
-    await main();
-})();
+module.exports = genrateCaption
