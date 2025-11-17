@@ -1,8 +1,6 @@
-
 const userModel = require('../models/user.models')
 const jwt = require("jsonwebtoken")
 const bcrypt = require('bcryptjs')
-
 async function registerController(req, res) {
     const { username, password } = req.body
     const existingUser = await userModel.findOne({ username })
@@ -11,7 +9,6 @@ async function registerController(req, res) {
             message: "This username is already taken"
         })
     }
-
     const user = await userModel.create({
         username,
         password: await bcrypt.hash(password, 10)
@@ -21,11 +18,9 @@ async function registerController(req, res) {
     }, process.env.JWT_SECRET)
     res.cookie('token', token)
     res.status(201).json({
-        message: "user created successfully",
-        user
+        message: "user created successfully", user
     })
 }
-
 async function loginController(req, res) {
     const { username, password } = req.body
     const user = await userModel.findOne({ username })
@@ -49,8 +44,4 @@ async function loginController(req, res) {
         user
     })
 }
-
-module.exports = {
-    registerController,
-    loginController
-}
+module.exports = { registerController, loginController }
